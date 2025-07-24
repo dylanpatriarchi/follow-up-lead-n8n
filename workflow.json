@@ -1,0 +1,532 @@
+{
+    "nodes": [
+      {
+        "parameters": {
+          "fromEmail": "your-email@domain.com",
+          "toEmail": "={{ $('Leggi i lead').item.json.Email }}",
+          "subject": "RE: Come risparmiare il 25% del tuo tempo con l'AI",
+          "emailFormat": "both",
+          "text": "={{ $json.message.content }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2560,
+          320
+        ],
+        "id": "bdd68536-50e9-44d4-b3d4-77ba2ca029d5",
+        "name": "Invia Email Follow Up",
+        "webhookId": "cd97e9d9-8beb-496b-8af6-58d7d079d225",
+        "credentials": {
+          "smtp": {
+            "id": "YOUR_SMTP_CREDENTIAL_ID",
+            "name": "SMTP account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "mode": "raw",
+          "jsonOutput": "={\n  \"Data Prossimo Follow-up\": \"{{ new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] }}\"\n}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.set",
+        "typeVersion": 3.4,
+        "position": [
+          2460,
+          100
+        ],
+        "id": "0bdd37e2-e557-474f-bc49-5669ab6ef4bc",
+        "name": "Genera Data Prossimo Follow Up"
+      },
+      {
+        "parameters": {
+          "fromEmail": "your-email@domain.com",
+          "toEmail": "={{ $('Leggi i lead').item.json.Email }}",
+          "subject": "Come risparmiare il 25% del tempo con l'AI",
+          "emailFormat": "both",
+          "text": "={{ $json.message.content }}",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.emailSend",
+        "typeVersion": 2.1,
+        "position": [
+          2020,
+          100
+        ],
+        "id": "83767dfc-eff0-4406-925d-870a2994f47d",
+        "name": "Invia Cold Email",
+        "webhookId": "55b780a7-a6ac-49ac-864e-46ed226f1152",
+        "credentials": {
+          "smtp": {
+            "id": "YOUR_SMTP_CREDENTIAL_ID",
+            "name": "SMTP account"
+          }
+        }
+      },
+      {
+        "parameters": {},
+        "type": "n8n-nodes-base.noOp",
+        "typeVersion": 1,
+        "position": [
+          2080,
+          720
+        ],
+        "id": "4e6a96c4-a01c-4648-8959-faf979156303",
+        "name": "Stop"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "79239720-5bf2-4b37-b32a-7b34c895f6cf",
+                "leftValue": "={{ $json['Risposta Ricevuta'] }}",
+                "rightValue": "No",
+                "operator": {
+                  "type": "string",
+                  "operation": "equals",
+                  "name": "filter.operator.equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          2100,
+          420
+        ],
+        "id": "75b57f75-945f-4552-abe9-7bc7bc4ab6c0",
+        "name": "Controlla se abbiamo ricevuto risposta"
+      },
+      {
+        "parameters": {
+          "conditions": {
+            "options": {
+              "caseSensitive": true,
+              "leftValue": "",
+              "typeValidation": "strict",
+              "version": 2
+            },
+            "conditions": [
+              {
+                "id": "4c27faf7-3d58-46ad-ac47-54de1f199082",
+                "leftValue": "={{ $('Leggi i lead').item.json['Data Prossimo Follow-up'] }}",
+                "rightValue": "={{ new Date($now).toISOString().split(\"T\")[0] }}\n",
+                "operator": {
+                  "type": "dateTime",
+                  "operation": "equals"
+                }
+              }
+            ],
+            "combinator": "and"
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.if",
+        "typeVersion": 2.2,
+        "position": [
+          1780,
+          560
+        ],
+        "id": "1ec2e487-1a9f-42ac-916c-1df5750cd0d5",
+        "name": "Controlla se è la data per il prossimo follow up"
+      },
+      {
+        "parameters": {
+          "rules": {
+            "values": [
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "leftValue": "={{ $json.Stato }}",
+                      "rightValue": "Nuovo",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals"
+                      },
+                      "id": "2c1dfe3b-b1df-4c0e-afea-8fdeca062ae8"
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              },
+              {
+                "conditions": {
+                  "options": {
+                    "caseSensitive": true,
+                    "leftValue": "",
+                    "typeValidation": "strict",
+                    "version": 2
+                  },
+                  "conditions": [
+                    {
+                      "id": "f38ac052-cbcb-4138-bdca-1973a23ea52f",
+                      "leftValue": "={{ $json.Stato }}",
+                      "rightValue": "Email Inviata",
+                      "operator": {
+                        "type": "string",
+                        "operation": "equals",
+                        "name": "filter.operator.equals"
+                      }
+                    }
+                  ],
+                  "combinator": "and"
+                }
+              }
+            ]
+          },
+          "options": {}
+        },
+        "type": "n8n-nodes-base.switch",
+        "typeVersion": 3.2,
+        "position": [
+          1520,
+          320
+        ],
+        "id": "89e90336-602b-4d88-9b0a-28837cee2842",
+        "name": "Controlla Stato"
+      },
+      {
+        "parameters": {
+          "rule": {
+            "interval": [
+              {
+                "triggerAtHour": 9
+              }
+            ]
+          }
+        },
+        "type": "n8n-nodes-base.scheduleTrigger",
+        "typeVersion": 1.2,
+        "position": [
+          1120,
+          320
+        ],
+        "id": "8d93ea39-81a7-443c-8e57-f57400329c21",
+        "name": "Trigger"
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "YOUR_UPDATE_QUERY_HERE",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          2680,
+          100
+        ],
+        "id": "eb3e7301-9085-4a97-a2c5-c51ceb896fca",
+        "name": "Inserisci followup",
+        "credentials": {
+          "mySql": {
+            "id": "YOUR_MYSQL_CREDENTIAL_ID",
+            "name": "MySQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.perplexity.ai/chat/completions",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          1800,
+          100
+        ],
+        "id": "9fc823a8-d4cf-47c4-b7c0-9bcda13e7179",
+        "name": "Perplexity API Cold Email"
+      },
+      {
+        "parameters": {
+          "method": "POST",
+          "url": "https://api.perplexity.ai/chat/completions",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.httpRequest",
+        "typeVersion": 4.2,
+        "position": [
+          2320,
+          320
+        ],
+        "id": "92203ab7-4c30-427c-bd4f-aa98c3326998",
+        "name": "Perplexity API Follow Up"
+      },
+      {
+        "parameters": {
+          "from": "YOUR_TWILIO_NUMBER",
+          "to": "RECIPIENT_NUMBER",
+          "toWhatsapp": true,
+          "message": "Messaggio di follow-up personalizzato",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.twilio",
+        "typeVersion": 1,
+        "position": [
+          2240,
+          100
+        ],
+        "id": "98b342ec-48ac-404b-af07-4ebae36cae30",
+        "name": "Cold Message",
+        "credentials": {
+          "twilioApi": {
+            "id": "YOUR_TWILIO_CREDENTIAL_ID",
+            "name": "Twilio account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "from": "YOUR_TWILIO_NUMBER",
+          "to": "RECIPIENT_NUMBER",
+          "toWhatsapp": true,
+          "message": "Messaggio di follow-up personalizzato",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.twilio",
+        "typeVersion": 1,
+        "position": [
+          2800,
+          320
+        ],
+        "id": "fa7d94e6-b38a-4d9d-95d7-b7035988dee9",
+        "name": "Follow up Message",
+        "credentials": {
+          "twilioApi": {
+            "id": "YOUR_TWILIO_CREDENTIAL_ID",
+            "name": "Twilio account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "YOUR_DELETE_QUERY_HERE",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          3060,
+          440
+        ],
+        "id": "dd38d6c9-5ca2-469c-8f02-5b118825c16b",
+        "name": "Rimuovi Lead1",
+        "credentials": {
+          "mySql": {
+            "id": "YOUR_MYSQL_CREDENTIAL_ID",
+            "name": "MySQL account"
+          }
+        }
+      },
+      {
+        "parameters": {
+          "operation": "executeQuery",
+          "query": "YOUR_SELECT_QUERY_HERE",
+          "options": {}
+        },
+        "type": "n8n-nodes-base.mySql",
+        "typeVersion": 2.4,
+        "position": [
+          1320,
+          320
+        ],
+        "id": "96c893eb-b4b8-44bc-aac7-599126081858",
+        "name": "Ottieni leads",
+        "credentials": {
+          "mySql": {
+            "id": "YOUR_MYSQL_CREDENTIAL_ID",
+            "name": "MySQL account"
+          }
+        }
+      }
+    ],
+    "connections": {
+      "Invia Email Follow Up": {
+        "main": [
+          [
+            {
+              "node": "Follow up Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Genera Data Prossimo Follow Up": {
+        "main": [
+          [
+            {
+              "node": "Inserisci followup",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Invia Cold Email": {
+        "main": [
+          [
+            {
+              "node": "Cold Message",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Controlla se abbiamo ricevuto risposta": {
+        "main": [
+          [
+            {
+              "node": "API Perplexity genera testo follow up",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Rimuovi Lead1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Controlla se è la data per il prossimo follow up": {
+        "main": [
+          [
+            {
+              "node": "Controlla se abbiamo ricevuto risposta",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Stop",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Controlla Stato": {
+        "main": [
+          [
+            {
+              "node": "API Perplexity Testo Cold Email",
+              "type": "main",
+              "index": 0
+            }
+          ],
+          [
+            {
+              "node": "Controlla se è la data per il prossimo follow up",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Trigger": {
+        "main": [
+          [
+            {
+              "node": "Ottieni leads",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "API Perplexity Testo Cold Email": {
+        "main": [
+          [
+            {
+              "node": "Invia Cold Email",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "API Perplexity genera testo follow up": {
+        "main": [
+          [
+            {
+              "node": "Invia Email Follow Up",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Cold Message": {
+        "main": [
+          [
+            {
+              "node": "Genera Data Prossimo Follow Up",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Follow up Message": {
+        "main": [
+          [
+            {
+              "node": "Rimuovi Lead1",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      },
+      "Rimuovi Lead1": {
+        "main": [
+          []
+        ]
+      },
+      "Ottieni leads": {
+        "main": [
+          [
+            {
+              "node": "Controlla Stato",
+              "type": "main",
+              "index": 0
+            }
+          ]
+        ]
+      }
+    },
+    "pinData": {},
+    "meta": {
+      "templateCredsSetupCompleted": true,
+      "instanceId": "18acd07d7cc55d63fb14ef466afb3de21daa8968bb3fea64df2c8895992bca3c"
+    }
+}
