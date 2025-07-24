@@ -12,12 +12,18 @@
       "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
-        760,
+        980,
         220
       ],
       "id": "87515b7f-14e7-4564-bc62-88e03a41265f",
       "name": "Invia Email Follow Up",
-      "webhookId": "cd97e9d9-8beb-496b-8af6-58d7d079d225"
+      "webhookId": "cd97e9d9-8beb-496b-8af6-58d7d079d225",
+      "credentials": {
+        "smtp": {
+          "id": "YOUR_SMTP_CREDENTIAL_ID",
+          "name": "SMTP account"
+        }
+      }
     },
     {
       "parameters": {
@@ -51,7 +57,13 @@
       ],
       "id": "0fbfe114-719e-47eb-abae-5a578bd0a1ad",
       "name": "Invia Cold Email",
-      "webhookId": "55b780a7-a6ac-49ac-864e-46ed226f1152"
+      "webhookId": "55b780a7-a6ac-49ac-864e-46ed226f1152",
+      "credentials": {
+        "smtp": {
+          "id": "YOUR_SMTP_CREDENTIAL_ID",
+          "name": "SMTP account"
+        }
+      }
     },
     {
       "parameters": {},
@@ -225,7 +237,13 @@
         0
       ],
       "id": "611257ac-ad93-4c83-aae0-bbfa8ab86d06",
-      "name": "Inserisci followup"
+      "name": "Inserisci followup",
+      "credentials": {
+        "mySql": {
+          "id": "YOUR_MYSQL_CREDENTIAL_ID",
+          "name": "MySQL account"
+        }
+      }
     },
     {
       "parameters": {
@@ -251,7 +269,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        580,
+        800,
         220
       ],
       "id": "37ac6d35-0faa-4249-aa0a-770eed5ad0e1",
@@ -272,7 +290,13 @@
         0
       ],
       "id": "82a637dd-cfbb-4da2-aa60-e447c39899d3",
-      "name": "Cold Message"
+      "name": "Cold Message",
+      "credentials": {
+        "twilioApi": {
+          "id": "YOUR_TWILIO_CREDENTIAL_ID",
+          "name": "Twilio account"
+        }
+      }
     },
     {
       "parameters": {
@@ -285,11 +309,17 @@
       "type": "n8n-nodes-base.twilio",
       "typeVersion": 1,
       "position": [
-        1000,
+        1220,
         220
       ],
       "id": "e0780d66-feac-4ad5-aff2-6daa5c82e4cd",
-      "name": "Follow up Message"
+      "name": "Follow up Message",
+      "credentials": {
+        "twilioApi": {
+          "id": "YOUR_TWILIO_CREDENTIAL_ID",
+          "name": "Twilio account"
+        }
+      }
     },
     {
       "parameters": {
@@ -300,11 +330,17 @@
       "type": "n8n-nodes-base.mySql",
       "typeVersion": 2.4,
       "position": [
-        1260,
+        1480,
         340
       ],
       "id": "dc8aaa95-2ad9-472c-b2cd-369756397050",
-      "name": "Rimuovi Lead1"
+      "name": "Rimuovi Lead1",
+      "credentials": {
+        "mySql": {
+          "id": "YOUR_MYSQL_CREDENTIAL_ID",
+          "name": "MySQL account"
+        }
+      }
     },
     {
       "parameters": {
@@ -319,9 +355,15 @@
         220
       ],
       "id": "28cd62c9-e61d-41ce-ba84-93a95697f8b8",
-      "name": "Ottieni leads"
-    }
-  ],
+      "name": "Ottieni leads",
+      "credentials": {
+        "mySql": {
+          "id": "YOUR_MYSQL_CREDENTIAL_ID",
+          "name": "MySQL account"
+        }
+              }
+      }
+    ],
   "connections": {
     "Invia Email Follow Up": {
       "main": [
@@ -358,13 +400,13 @@
     },
     "Controlla se abbiamo ricevuto risposta": {
       "main": [
-        [
-          {
-            "node": "Perplexity API Follow Up",
-            "type": "main",
-            "index": 0
-          }
-        ],
+                  [
+            {
+              "node": "Perplexity API Follow Up",
+              "type": "main",
+              "index": 0
+            }
+          ],
         [
           {
             "node": "Rimuovi Lead1",
@@ -474,9 +516,9 @@
             "index": 0
           }
         ]
-      ]
-    }
-  },
+              ]
+      }
+    },
   "pinData": {},
   "meta": {
     "templateCredsSetupCompleted": true,
